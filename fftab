@@ -1,0 +1,37 @@
+#!/usr/bin/python3
+
+# Firefox tab group opener - coded by LuigiG
+# Example: ffit program.c
+# program.c contains comment(s) like:
+# //FFTAB: https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference
+
+import re
+import subprocess
+import sys
+
+FFOX = '/Applications/Firefox.app/Contents/MacOS/firefox'
+
+def open_tabs(file_path):
+    url_pattern = re.compile(r'^/{0,2}\s*FFTAB:\s+(.*)')
+    first = True
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            match = url_pattern.search(line)
+            if match:
+                url = match.group(1)
+                if first:
+                    # First URL, use wget with -c
+                    command = [FFOX, '--new-window', url]
+                    first = False
+                else:
+                    # Subsequent URLs, use wget without -c
+                    command = [FFOX, '--new-tab', url]
+                subprocess.run(command)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]}  <file_path>")
+        sys.exit(1)
+    open_tabs(sys.argv[1])
