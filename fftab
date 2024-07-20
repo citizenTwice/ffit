@@ -8,6 +8,7 @@
 import re
 import subprocess
 import sys
+import time
 
 FFOX = '/Applications/Firefox.app/Contents/MacOS/firefox'
 
@@ -24,10 +25,13 @@ def open_tabs(file_path):
                     # First URL, use wget with -c
                     command = [FFOX, '--new-window', url]
                     first = False
+                    subprocess.run(command)
+                    time.sleep(1)
                 else:
                     # Subsequent URLs, use wget without -c
                     command = [FFOX, '--new-tab', url]
-                subprocess.run(command)
+                    subprocess.run(command)
+                    
 
 
 if __name__ == "__main__":
